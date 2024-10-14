@@ -39,7 +39,8 @@ ignore = [
     "S608", # hardcoded-sql-expression
     "PLR2004", # unnamed-numerical-constants
     "DOC201", # "returns"-section-in-docstring
-    "F401" # unused-imports
+    "F401", # unused-imports
+    "RET504", # Unnecessary assignment
 ]
 
 [tool.ruff.lint.flake8-quotes]
