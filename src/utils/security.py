@@ -37,10 +37,10 @@ def decode_jwt(
 
 def hash_password(
         password: str,
-) -> bytes:
+) -> str:
     salt = bcrypt.gensalt()
     pwd_bytes: bytes = password.encode()
-    return bcrypt.hashpw(pwd_bytes, salt)
+    return bcrypt.hashpw(pwd_bytes, salt).decode()
 
 
 def validate_password(
