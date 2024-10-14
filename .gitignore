@@ -1,4 +1,6 @@
 .idea
+__pycache__/
 venv/
 .env
 .test.env
+src/auth_keys
