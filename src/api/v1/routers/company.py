@@ -3,7 +3,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from src.api.v1.services.company import Account, Company
 from src.schemas.company import AdminJwtPayload, CompanyRequest, MailBody, RegisterAccount, SuccessStatus
 from src.utils.email_sender import send_email
-from src.utils.security import encode_jwt, hash_password
+from src.utils.security import encode_jwt
 
 company_router = APIRouter()
 
@@ -54,7 +54,6 @@ async def register_company(
 ) -> SuccessStatus:
     account_in_db = await account_service.check_account(company.email)
     if account_in_db:
-        company.password = str(hash_password(company.password))
         await company_service.create_company(company)
         return SuccessStatus(status='Success')
     raise HTTPException(
