@@ -29,15 +29,6 @@ class CompanyRequest(BaseModel):
     company_name: str
 
 
-class CompanyDB(BaseModel):
-    id: int
-    email: str
-    password: str
-    first_name: str
-    last_name: str
-    company_name: str
-
-
 @dataclass
 class AdminJwtPayload:
     sub: str
