@@ -15,21 +15,9 @@ async def check_account(
         background_tasks: BackgroundTasks,
         account_service: Account = Depends(),
 ) -> SuccessStatus:
-    account_in_db = await account_service.check_account(account)
-    if not account_in_db:
-        payload = AdminJwtPayload(sub='admin', email=account)
-        token = encode_jwt(payload)
-        data = {
-            'to': account,
-            'subject': 'Token',
-            'body': token,
-        }
-        background_tasks.add_task(send_email, MailBody(**data))
-        return SuccessStatus(status='Success')
-    raise HTTPException(
-        status_code=status.HTTP_400_BAD_REQUEST,
-        detail=f'Email {account} is already in use by someone.',
-    )
+    await check_if_account_exists(account, account_service)
+    background_tasks.add_task(send_token_to_admin, account, background_tasks)
+    return SuccessStatus(status='Success')
 
 
 @company_router.post('/sign-up')
@@ -37,14 +25,9 @@ async def register_account(
         account: RegisterAccount,
         account_service: Account = Depends(),
 ) -> SuccessStatus:
-    account_in_db = await account_service.check_account(account.email)
-    if not account_in_db:
-        await account_service.create_account(account)
-        return SuccessStatus(status='Success')
-    raise HTTPException(
-        status_code=status.HTTP_400_BAD_REQUEST,
-        detail=f'Email {account} is already in use by someone.',
-    )
+    await check_if_account_exists(account.email, account_service)
+    await account_service.create_account(account)
+    return SuccessStatus(status='Success')
 
 
 @company_router.post('/sign-up-complete')
