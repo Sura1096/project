@@ -35,12 +35,19 @@ async def register_company(
         company: CompanyRequest,
         account_service: Account = Depends(),
         company_service: Company = Depends(),
+        user_service: User = Depends(),
+        secret_service: Secret = Depends(),
 ) -> SuccessStatus:
-    account_in_db = await account_service.check_account(company.email)
-    if account_in_db:
-        await company_service.create_company(company)
-        return SuccessStatus(status='Success')
-    raise HTTPException(
-        status_code=status.HTTP_400_BAD_REQUEST,
-        detail=f'Email {company.email} is already in use by someone.',
+    account_in_db = await check_if_account_not_exists(company.email, account_service)
+    data = CompanySaveDb(email_id=account_in_db.id, company_name=company.company_name)
+    company_id = await company_service.create_company_and_get_id(data)
+
+    user = UserSaveDb(
+        company_id=company_id,
+        first_name=company.first_name,
+        last_name=company.last_name,
+        email=company.email,
     )
+    user_id = await user_service.create_user(user)
+    await secret_service.add_secret(SecretSaveDb(user_id=user_id, password=company.password))
+    return SuccessStatus(status='Success')
