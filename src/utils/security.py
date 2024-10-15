@@ -8,11 +8,10 @@ auth_jwt_config = AuthJwt()
 
 
 def encode_jwt(
-        payload: AdminJwtPayload,
+        payload: dict,
         private_key: str = auth_jwt_config.private_key.read_text(),
         algorithm: str = auth_jwt_config.algorithm,
 ) -> str:
-    payload = payload.__dict__
     encoded = jwt.encode(payload, private_key, algorithm=algorithm)
     return encoded
 
