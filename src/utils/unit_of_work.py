@@ -5,11 +5,14 @@ from typing import Any
 
 from src.db.database import async_session_maker
 from src.repositories.company import AccountRepository, CompanyRepository
+from src.repositories.user import SecretRepository, UserRepository
 
 
 class AbstractUnitOfWork(ABC):
     account: AccountRepository
     company: CompanyRepository
+    user: UserRepository
+    secret: SecretRepository
 
     @abstractmethod
     def __init__(self) -> None:
@@ -40,6 +43,8 @@ class UnitOfWork(AbstractUnitOfWork):
         self.session = self.session_factory()
         self.account = AccountRepository(self.session)
         self.company = CompanyRepository(self.session)
+        self.user = UserRepository(self.session)
+        self.secret = SecretRepository(self.session)
         return self
 
     async def __aexit__(
