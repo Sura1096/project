@@ -22,8 +22,11 @@ class Company(Base):
     __tablename__ = 'company'
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    email: Mapped[str]
-    password: Mapped[str]
-    first_name: Mapped[str]
-    last_name: Mapped[str]
+    email_id: Mapped[int] = mapped_column(ForeignKey('account.id'), nullable=True)
     company_name: Mapped[str]
+
+    account = relationship('Account', back_populates='company')
+    user = relationship('User', back_populates='company', cascade='all, delete-orphan')
+
+    def to_pydantic_schema(self) -> CompanyDB:
+        return CompanyDB(**self.__dict__)
