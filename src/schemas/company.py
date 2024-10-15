@@ -29,10 +29,15 @@ class CompanyRequest(BaseModel):
     company_name: str
 
 
-@dataclass
-class AdminJwtPayload:
-    sub: str
-    email: str
+class CompanySaveDb(BaseModel):
+    email_id: int
+    company_name: str
+
+
+class CompanyDB(BaseModel):
+    id: int
+    email_id: int
+    company_name: str
 
 
 @dataclass
