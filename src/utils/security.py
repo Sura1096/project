@@ -3,7 +3,6 @@ import jwt
 from fastapi import HTTPException, status
 
 from src.schemas.auth import AuthJwt
-from src.schemas.company import AdminJwtPayload
 
 auth_jwt_config = AuthJwt()
 
