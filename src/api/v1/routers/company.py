@@ -1,9 +1,10 @@
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
+from fastapi import APIRouter, BackgroundTasks, Depends
 
-from src.api.v1.services.company import Account, Company
-from src.schemas.company import AdminJwtPayload, CompanyRequest, MailBody, RegisterAccount, SuccessStatus
-from src.utils.email_sender import send_email
-from src.utils.security import encode_jwt
+from src.api.v1.services.company import Account, Company, check_if_account_exists, check_if_account_not_exists
+from src.api.v1.services.user import Secret, User
+from src.schemas.company import CompanyRequest, CompanySaveDb, RegisterAccount, SuccessStatus
+from src.schemas.user import SecretSaveDb, UserSaveDb
+from src.utils.email_sender import send_token_to_admin
 
 company_router = APIRouter()
 
