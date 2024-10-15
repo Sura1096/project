@@ -18,3 +18,8 @@ class AccountRepository(SqlAlchemyRepository):
 
 class CompanyRepository(SqlAlchemyRepository):
     model = Company
+
+    async def check_company(self, company_name: str) -> Company | None:
+        query = select(self.model).where(self.model.company_name == company_name)
+        result = await self.session.execute(query)
+        return result.scalar_one_or_none()
