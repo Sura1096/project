@@ -19,6 +19,10 @@ class Account(BaseService):
     async def create_account(self, account: RegisterAccount) -> None:
         await self.uow.account.add_one(**account.model_dump())
 
+    @transaction_mode
+    async def change_email(self, old_email: str, new_email: str, new_token: str) -> None:
+        await self.uow.account.change_email(old_email, new_email, new_token)
+
 
 class Company(BaseService):
     base_repository: str = 'company'
