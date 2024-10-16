@@ -11,8 +11,9 @@ from src.api.v1.services.user import Secret, User, check_if_user_not_exists
 from src.schemas.company import RegisterAccount
 from src.schemas.user import CreateUser, RegisterUser, SecretSaveDb, UpdateEmail, UpdateEmailDb, UpdateName, UserSaveDb
 from src.utils.email_sender import send_token, send_token_to_user
+from src.utils.security import validate_auth_user
 
-user_router = APIRouter()
+user_router = APIRouter(dependencies=[Depends(validate_auth_user)])
 
 
 @user_router.post('/create_user')

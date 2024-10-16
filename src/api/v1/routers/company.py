@@ -1,10 +1,11 @@
 from fastapi import APIRouter, BackgroundTasks, Depends
 
-from src.api.v1.services.company import Account, Company, check_if_account_exists, check_if_account_not_exists
+from src.api.v1.services.company import Account, Company, check_if_account_exists
 from src.api.v1.services.user import Secret, User
 from src.schemas.company import CompanyRequest, CompanySaveDb, RegisterAccount, SuccessStatus
 from src.schemas.user import SecretSaveDb, UserSaveDb
 from src.utils.email_sender import send_token_to_admin
+from src.utils.security import validate_auth_user, validate_email_from_token
 
 company_router = APIRouter()
 
@@ -37,8 +38,10 @@ async def register_company(
         company_service: Company = Depends(),
         user_service: User = Depends(),
         secret_service: Secret = Depends(),
+        token: str = Depends(validate_auth_user),
 ) -> SuccessStatus:
-    account_in_db = await check_if_account_not_exists(company.email, account_service)
+    validate_email_from_token(token, company.email)
+    account_in_db = await account_service.check_account(company.email)
     data = CompanySaveDb(email_id=account_in_db.id, company_name=company.company_name)
     company_id = await company_service.create_company_and_get_id(data)
 
