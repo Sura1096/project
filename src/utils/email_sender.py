@@ -6,7 +6,7 @@ from fastapi import BackgroundTasks
 
 from src.core.config import email
 from src.schemas.company import MailBody
-from src.utils.security import encode_jwt
+from src.utils.security import decode_jwt, encode_jwt
 
 
 async def send_email(msg: MailBody) -> dict:
@@ -47,3 +47,11 @@ def send_token_to_user(account: str, tasks: BackgroundTasks) -> None:
         'body': token,
     }
     tasks.add_task(send_email, MailBody(**data))
+
+
+def send_token(invite_token: str, new_account: str, tasks: BackgroundTasks) -> None:
+    payload = decode_jwt(invite_token)
+    if payload.get('sub') == 'admin':
+        tasks.add_task(send_token_to_admin, new_account, tasks)
+    elif payload.get('sub') == 'user':
+        tasks.add_task(send_token_to_user, new_account, tasks)
