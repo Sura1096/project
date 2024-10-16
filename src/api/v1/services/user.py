@@ -20,6 +20,14 @@ class User(BaseService):
             return result.to_pydantic_schema()
         return None
 
+    @transaction_mode
+    async def change_email(self, old_email: str, new_email: str) -> None:
+        await self.uow.user.change_email(old_email, new_email)
+
+    @transaction_mode
+    async def change_name(self, email: str, new_first_name: str, new_last_name: str) -> None:
+        await self.uow.user.change_name(email, new_first_name, new_last_name)
+
 
 class Secret(BaseService):
     base_repository: str = 'secret'
