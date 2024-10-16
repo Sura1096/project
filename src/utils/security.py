@@ -20,9 +20,9 @@ def decode_jwt(
         token: str,
         public_key: str = auth_jwt_config.public_key.read_text(),
         algorithm: str = auth_jwt_config.algorithm,
-) -> str:
+) -> dict:
     try:
-        decoded = jwt.decode(token, public_key, algorithm=[algorithm])
+        decoded = jwt.decode(token, public_key, algorithms=[algorithm])
     except jwt.InvalidTokenError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
