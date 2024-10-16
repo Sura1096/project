@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
 
 from src.schemas.company import AccountDB, CompanyDB, CompanyRequest, CompanySaveDb, RegisterAccount
+from src.schemas.user import UpdateEmailDb
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
 
@@ -20,8 +21,8 @@ class Account(BaseService):
         await self.uow.account.add_one(**account.model_dump())
 
     @transaction_mode
-    async def change_email(self, old_email: str, new_email: str, new_token: str) -> None:
-        await self.uow.account.change_email(old_email, new_email, new_token)
+    async def change_email(self, email: UpdateEmailDb) -> None:
+        await self.uow.account.change_email(email)
 
 
 class Company(BaseService):
