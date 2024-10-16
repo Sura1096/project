@@ -9,7 +9,7 @@ from src.api.v1.services.company import (
 )
 from src.api.v1.services.user import Secret, User, check_if_user_not_exists
 from src.schemas.company import RegisterAccount
-from src.schemas.user import CreateUser, RegisterUser, SecretSaveDb, UserSaveDb
+from src.schemas.user import CreateUser, RegisterUser, SecretSaveDb, UpdateEmail, UpdateEmailDb, UpdateName, UserSaveDb
 from src.utils.email_sender import send_token, send_token_to_user
 
 user_router = APIRouter()
@@ -60,37 +60,32 @@ async def sign_up_complete_user(
 
 @user_router.post('/new-email')
 async def send_token_to_another_email(
-        old_account: str,
-        new_account: str,
+        email: UpdateEmail,
         background_tasks: BackgroundTasks,
         account_service: Account = Depends(),
 ) -> None:
-    old_account_in_db = await check_if_account_not_exists(old_account, account_service)
-    await check_if_account_exists(new_account, account_service)
-    background_tasks.add_task(send_token, old_account_in_db.invite_token, new_account, background_tasks)
+    old_account_in_db = await check_if_account_not_exists(email.old_account, account_service)
+    await check_if_account_exists(email.new_account, account_service)
+    background_tasks.add_task(send_token, old_account_in_db.invite_token, email.new_account, background_tasks)
 
 
 @user_router.patch('/change-email')
 async def change_email_in_db(
-        token: str,
-        old_account: str,
-        new_account: str,
+        email: UpdateEmailDb,
         account_service: Account = Depends(),
         user_service: User = Depends(),
 ) -> None:
-    old_account_in_db = await check_if_account_not_exists(old_account, account_service)
-    await account_service.change_email(old_account, new_account, token)
-    await user_service.change_email(old_account, new_account)
+    old_account_in_db = await check_if_account_not_exists(email.old_account, account_service)
+    await account_service.change_email(email)
+    await user_service.change_email(email.old_account, email.new_account)
 
 
 @user_router.patch('/change-name')
 async def change_name(
-        account: str,
-        new_first_name: str,
-        new_last_name: str,
+        name: UpdateName,
         account_service: Account = Depends(),
         user_service: User = Depends(),
 ) -> None:
-    old_account_in_db = await check_if_account_not_exists(account, account_service)
-    await user_service.change_name(account, new_first_name, new_last_name)
+    old_account_in_db = await check_if_account_not_exists(name.account, account_service)
+    await user_service.change_name(name)
 
