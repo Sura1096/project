@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 
-from src.schemas.user import SecretSaveDb, UserDB, UserSaveDb
+from src.schemas.user import SecretSaveDb, UpdateName, UserDB, UserSaveDb
 from src.utils.security import hash_password
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
@@ -25,8 +25,8 @@ class User(BaseService):
         await self.uow.user.change_email(old_email, new_email)
 
     @transaction_mode
-    async def change_name(self, email: str, new_first_name: str, new_last_name: str) -> None:
-        await self.uow.user.change_name(email, new_first_name, new_last_name)
+    async def change_name(self, name: UpdateName) -> None:
+        await self.uow.user.change_name(name)
 
 
 class Secret(BaseService):
