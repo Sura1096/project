@@ -38,3 +38,20 @@ class SecretDB(BaseModel):
     id: int
     user_id: int
     password: str
+
+
+class UpdateEmail(BaseModel):
+    old_account: str
+    new_account: str
+
+
+class UpdateEmailDb(BaseModel):
+    token: str
+    old_account: str
+    new_account: str
+
+
+class UpdateName(BaseModel):
+    account: str
+    new_first_name: str
+    new_last_name: str
