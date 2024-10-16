@@ -1,6 +1,7 @@
 from sqlalchemy import select, update
 
 from src.models.company import Account, Company
+from src.schemas.user import UpdateEmailDb
 from src.utils.repository import SqlAlchemyRepository
 
 
@@ -15,15 +16,10 @@ class AccountRepository(SqlAlchemyRepository):
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
 
-    async def change_email(
-            self,
-            old_email: str,
-            new_email: str,
-            new_token: str,
-    ) -> None:
+    async def change_email(self, email:  UpdateEmailDb) -> None:
         query = (update(self.model)
-                 .where(self.model.email == old_email)
-                 .values(email=new_email, invite_token=new_token)
+                 .where(self.model.email == email.old_account)
+                 .values(email=email.new_account, invite_token=email.token)
                  .execution_options(synchronize_session='fetch'))
         await self.session.execute(query)
 

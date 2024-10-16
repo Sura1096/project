@@ -1,6 +1,7 @@
 from sqlalchemy import select, update
 
 from src.models.user import Secret, User
+from src.schemas.user import UpdateName
 from src.utils.repository import SqlAlchemyRepository
 
 
@@ -19,15 +20,10 @@ class UserRepository(SqlAlchemyRepository):
                  .execution_options(synchronize_session='fetch'))
         await self.session.execute(query)
 
-    async def change_name(
-            self,
-            email: str,
-            new_first_name: str,
-            new_last_name: str,
-    ) -> None:
+    async def change_name(self, name: UpdateName) -> None:
         query = (update(self.model)
-                 .where(self.model.email == email)
-                 .values(first_name=new_first_name, last_name=new_last_name)
+                 .where(self.model.email == name.account)
+                 .values(first_name=name.new_first_name, last_name=name.new_last_name)
                  .execution_options(synchronize_session='fetch'))
         await self.session.execute(query)
 
