@@ -17,7 +17,7 @@ user_router = APIRouter(dependencies=[Depends(validate_auth_user)])
 
 
 @user_router.post('/create_user')
-async def create_user_in_db(
+async def create_user(
         user: CreateUser,
         account_service: Account = Depends(),
         user_service: User = Depends(),
@@ -37,7 +37,7 @@ async def create_user_in_db(
 
 
 @user_router.post('/sign-up')
-async def sign_up_user(
+async def sign_up(
         email: str,
         background_tasks: BackgroundTasks,
         account_service: Account = Depends(),
@@ -47,7 +47,7 @@ async def sign_up_user(
 
 
 @user_router.post('/sign-up-complete')
-async def sign_up_complete_user(
+async def sign_up_complete(
         user: RegisterUser,
         account_service: Account = Depends(),
         secret_service: Secret = Depends(),
@@ -71,7 +71,7 @@ async def send_token_to_another_email(
 
 
 @user_router.patch('/change-email')
-async def change_email_in_db(
+async def change_email(
         email: UpdateEmailDb,
         account_service: Account = Depends(),
         user_service: User = Depends(),
