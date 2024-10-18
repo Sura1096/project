@@ -25,10 +25,8 @@ async def check_account(
 async def register_account(
         account: RegisterAccount,
         account_service: Account = Depends(),
-) -> SuccessStatus:
-    await check_if_account_exists(account.email, account_service)
-    await account_service.create_account(account)
-    return SuccessStatus(status='Success')
+) -> AccountResponse:
+    return await account_service.register_account(account)
 
 
 @company_router.post('/sign-up-complete')
