@@ -3,14 +3,18 @@ from fastapi import APIRouter, BackgroundTasks, Depends
 from src.api.v1.services.company import (
     Account,
     Company,
-    check_if_account_exists,
-    check_if_account_not_exists,
-    check_if_company_not_exists,
 )
-from src.api.v1.services.user import Secret, User, check_if_user_not_exists
-from src.schemas.company import RegisterAccount
-from src.schemas.user import CreateUser, RegisterUser, SecretSaveDb, UpdateEmail, UpdateEmailDb, UpdateName, UserSaveDb
-from src.utils.email_sender import send_token, send_token_to_user
+from src.api.v1.services.user import Secret, User
+from src.schemas.user import (
+    CreateUser,
+    RegisterUser,
+    UpdateEmail,
+    UpdateEmailDb,
+    UpdateName,
+    UserEmail,
+    UserResponse,
+    UserStatus,
+)
 from src.utils.security import validate_auth_user
 
 user_router = APIRouter(dependencies=[Depends(validate_auth_user)])
