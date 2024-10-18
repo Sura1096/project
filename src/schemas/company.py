@@ -1,6 +1,6 @@
-from dataclasses import dataclass
-
 from pydantic import BaseModel, ConfigDict, EmailStr, constr
+
+from src.schemas.user import UserEmail
 
 
 class RegisterAccount(BaseModel):
@@ -9,7 +9,7 @@ class RegisterAccount(BaseModel):
 
 
 class MailBody(BaseModel):
-    to: str
+    to: UserEmail
     subject: str
     body: str
 
@@ -18,6 +18,15 @@ class AccountDB(BaseModel):
     id: int
     email: str
     invite_token: str
+
+
+class AccountStatus(BaseModel):
+    status: int
+
+
+class AccountResponse(BaseModel):
+    status: int
+    data: AccountDB
 
 
 class CompanyRequest(BaseModel):
@@ -40,6 +49,6 @@ class CompanyDB(BaseModel):
     company_name: str
 
 
-@dataclass
-class SuccessStatus:
-    status: str
+class CompanyResponse(BaseModel):
+    status: int
+    data: CompanyDB
