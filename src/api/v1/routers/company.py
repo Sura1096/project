@@ -12,12 +12,13 @@ company_router = APIRouter()
 @company_router.get('/check_account')
 async def check_account(
         account: str,
+        username: str,
+        password: str,
         background_tasks: BackgroundTasks,
         account_service: Account = Depends(),
-) -> SuccessStatus:
-    await check_if_account_exists(account, account_service)
-    background_tasks.add_task(send_token_to_admin, account, background_tasks)
-    return SuccessStatus(status='Success')
+) -> AccountStatus:
+    account = UserEmail(email=account, username=username, password=password)
+    return await account_service.send_email(account, background_tasks)
 
 
 @company_router.post('/sign-up')
