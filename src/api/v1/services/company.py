@@ -1,7 +1,18 @@
-from fastapi import HTTPException, status
+from fastapi import BackgroundTasks, HTTPException, status
 
-from src.schemas.company import AccountDB, CompanyDB, CompanyRequest, CompanySaveDb, RegisterAccount
-from src.schemas.user import UpdateEmailDb
+from src.api.v1.services.user import Secret, User
+from src.schemas.company import (
+    AccountDB,
+    AccountResponse,
+    AccountStatus,
+    CompanyDB,
+    CompanyRequest,
+    CompanyResponse,
+    CompanySaveDb,
+    RegisterAccount,
+)
+from src.schemas.user import SecretSaveDb, UpdateEmailDb, UserEmail, UserSaveDb
+from src.utils.email_sender import send_token_to_admin
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
 
