@@ -8,6 +8,12 @@ class CreateUser(BaseModel):
     email: EmailStr
 
 
+class UserEmail(BaseModel):
+    email: str
+    username: str
+    password: str
+
+
 class RegisterUser(BaseModel):
     email: EmailStr
     token: str
@@ -43,6 +49,8 @@ class SecretDB(BaseModel):
 class UpdateEmail(BaseModel):
     old_account: str
     new_account: str
+    username: str
+    password: str
 
 
 class UpdateEmailDb(BaseModel):
@@ -55,3 +63,12 @@ class UpdateName(BaseModel):
     account: str
     new_first_name: str
     new_last_name: str
+
+
+class UserStatus(BaseModel):
+    status: int
+
+
+class UserResponse(BaseModel):
+    status: int
+    data: UserDB
