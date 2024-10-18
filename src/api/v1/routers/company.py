@@ -37,18 +37,7 @@ async def register_company(
         user_service: User = Depends(),
         secret_service: Secret = Depends(),
         token: str = Depends(validate_auth_user),
-) -> SuccessStatus:
+) -> CompanyResponse:
     validate_email_from_token(token, company.email)
-    account_in_db = await account_service.check_account(company.email)
-    data = CompanySaveDb(email_id=account_in_db.id, company_name=company.company_name)
-    company_id = await company_service.create_company_and_get_id(data)
+    return await company_service.register_company(company, account_service, user_service, secret_service)
 
-    user = UserSaveDb(
-        company_id=company_id,
-        first_name=company.first_name,
-        last_name=company.last_name,
-        email=company.email,
-    )
-    user_id = await user_service.create_user(user)
-    await secret_service.add_secret(SecretSaveDb(user_id=user_id, password=company.password))
-    return SuccessStatus(status='Success')
