@@ -35,6 +35,27 @@ class Account(BaseService):
     async def change_email(self, email: UpdateEmailDb) -> None:
         await self.uow.account.change_email(email)
 
+    async def send_email(self, account: UserEmail, background_tasks: BackgroundTasks) -> AccountStatus:
+        await self.__check_if_account_exists(account.email)
+        background_tasks.add_task(send_token_to_admin, account, background_tasks)
+        return AccountStatus(status=status.HTTP_200_OK)
+
+    async def register_account(self, account: RegisterAccount) -> AccountResponse:
+        await self.__check_if_account_exists(account.email)
+        await self.create_account(account)
+        return AccountResponse(
+            status=status.HTTP_201_CREATED,
+            data=await self.check_account(account.email),
+        )
+
+    async def __check_if_account_exists(self, account: str) -> None:
+        account_in_db = await self.check_account(account)
+        if account_in_db:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='Email already exists.',
+            )
+
 
 class Company(BaseService):
     base_repository: str = 'company'
@@ -54,28 +75,37 @@ class Company(BaseService):
             return result.to_pydantic_schema()
         return None
 
+    async def register_company(
+            self,
+            company: CompanyRequest,
+            account_service: Account,
+            user_service: User,
+            secret_service: Secret,
+    ) -> CompanyResponse:
+        account_in_db = await self.__check_if_account_exists(company.email, account_service)
+        data = CompanySaveDb(email_id=account_in_db.id, company_name=company.company_name)
+        company_id = await self.create_company_and_get_id(data)
 
-async def check_if_account_exists(account: str, account_service: Account) -> None:
-    account_in_db = await account_service.check_account(account)
-    if account_in_db:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+        user = UserSaveDb(
+            company_id=company_id,
+            first_name=company.first_name,
+            last_name=company.last_name,
+            email=company.email,
+        )
+        user_id = await user_service.create_user_db(user)
+        await secret_service.add_secret(SecretSaveDb(user_id=user_id, password=company.password))
+        return CompanyResponse(
+            status=status.HTTP_201_CREATED,
+            data=await self.check_company(company.company_name),
         )
 
+    @staticmethod
+    async def __check_if_account_exists(account: str, account_service: Account) -> AccountDB:
+        account_in_db = await account_service.check_account(account)
+        if not account_in_db:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail='Email not found.',
+            )
+        return account_in_db
 
-async def check_if_account_not_exists(account: str, account_service: Account) -> AccountDB:
-    account_in_db = await account_service.check_account(account)
-    if not account_in_db:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-        )
-    return account_in_db
-
-
-async def check_if_company_not_exists(company_name: str, company_service: Company) -> CompanyDB:
-    company_info = await company_service.check_company(company_name)
-    if not company_info:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-        )
-    return company_info
