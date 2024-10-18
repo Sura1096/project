@@ -1,10 +1,9 @@
 from fastapi import APIRouter, BackgroundTasks, Depends
 
-from src.api.v1.services.company import Account, Company, check_if_account_exists
+from src.api.v1.services.company import Account, Company
 from src.api.v1.services.user import Secret, User
-from src.schemas.company import CompanyRequest, CompanySaveDb, RegisterAccount, SuccessStatus
-from src.schemas.user import SecretSaveDb, UserSaveDb
-from src.utils.email_sender import send_token_to_admin
+from src.schemas.company import AccountResponse, AccountStatus, CompanyRequest, CompanyResponse, RegisterAccount
+from src.schemas.user import UserEmail
 from src.utils.security import validate_auth_user, validate_email_from_token
 
 company_router = APIRouter()
