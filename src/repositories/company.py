@@ -31,3 +31,8 @@ class CompanyRepository(SqlAlchemyRepository):
         query = select(self.model).where(self.model.company_name == company_name)
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
+
+    async def get_company_by_id(self, company_id: int) -> Company | None:
+        query = select(self.model).where(self.model.id == company_id)
+        result = await self.session.execute(query)
+        return result.scalar_one_or_none()
