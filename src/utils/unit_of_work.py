@@ -5,6 +5,9 @@ from typing import Any
 
 from src.db.database import async_session_maker
 from src.repositories.company import AccountRepository, CompanyRepository
+from src.repositories.employee import EmployeeRepository
+from src.repositories.position import PositionRepository
+from src.repositories.structure import StructureRepository
 from src.repositories.user import SecretRepository, UserRepository
 
 
@@ -13,6 +16,9 @@ class AbstractUnitOfWork(ABC):
     company: CompanyRepository
     user: UserRepository
     secret: SecretRepository
+    structure: StructureRepository
+    position: PositionRepository
+    employee: EmployeeRepository
 
     @abstractmethod
     def __init__(self) -> None:
@@ -45,6 +51,9 @@ class UnitOfWork(AbstractUnitOfWork):
         self.company = CompanyRepository(self.session)
         self.user = UserRepository(self.session)
         self.secret = SecretRepository(self.session)
+        self.structure = StructureRepository(self.session)
+        self.position = PositionRepository(self.session)
+        self.employee = EmployeeRepository(self.session)
         return self
 
     async def __aexit__(
