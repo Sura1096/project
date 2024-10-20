@@ -27,6 +27,7 @@ class Company(Base):
 
     account = relationship('Account', back_populates='company')
     user = relationship('User', back_populates='company', cascade='all, delete-orphan')
+    structure = relationship('Structure', back_populates='company', cascade='all, delete-orphan')
 
     def to_pydantic_schema(self) -> CompanyDB:
         return CompanyDB(**self.__dict__)
