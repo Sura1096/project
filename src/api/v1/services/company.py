@@ -38,7 +38,7 @@ class Account(BaseService):
     async def send_email(self, account: UserEmail, background_tasks: BackgroundTasks) -> AccountStatus:
         await self.__check_if_account_exists(account.email)
         background_tasks.add_task(send_token_to_admin, account, background_tasks)
-        return AccountStatus(status=status.HTTP_200_OK)
+        return AccountStatus(status=status.HTTP_200_OK, detail='An invite token has been sent to your email address.')
 
     async def register_account(self, account: RegisterAccount) -> AccountResponse:
         await self.__check_if_account_exists(account.email)

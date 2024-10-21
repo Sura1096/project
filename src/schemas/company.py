@@ -22,6 +22,7 @@ class AccountDB(BaseModel):
 
 class AccountStatus(BaseModel):
     status: int
+    detail: str
 
 
 class AccountResponse(BaseModel):

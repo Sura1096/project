@@ -67,6 +67,7 @@ class UpdateName(BaseModel):
 
 class UserStatus(BaseModel):
     status: int
+    detail: str
 
 
 class UserResponse(BaseModel):

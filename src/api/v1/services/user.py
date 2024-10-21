@@ -80,7 +80,7 @@ class User(BaseService):
     ) -> UserStatus:
         await self.__check_if_account_exists(email.email, account_service)
         background_tasks.add_task(send_token_to_user, email, background_tasks)
-        return UserStatus(status=status.HTTP_200_OK)
+        return UserStatus(status=status.HTTP_200_OK, detail='An invite token has been sent to your email address.')
 
     async def sign_up_complete(
             self,
@@ -111,7 +111,7 @@ class User(BaseService):
         old_account_in_db = await self.__check_if_account_not_exists(email.old_account, account_service)
         await self.__check_if_account_exists(email.new_account, account_service)
         background_tasks.add_task(send_token, old_account_in_db.invite_token, email, background_tasks)
-        return UserStatus(status=status.HTTP_200_OK)
+        return UserStatus(status=status.HTTP_200_OK, detail='An invite token has been sent to your email address.')
 
     async def change_email(
             self,
