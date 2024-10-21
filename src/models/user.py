@@ -16,6 +16,7 @@ class User(Base):
 
     company = relationship('Company', back_populates='user')
     secret = relationship('Secret', back_populates='user', cascade='all, delete-orphan')
+    employee = relationship('Employee', back_populates='user', cascade='all, delete-orphan')
 
     def to_pydantic_schema(self) -> UserDB:
         return UserDB(**self.__dict__)
