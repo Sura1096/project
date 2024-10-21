@@ -50,6 +50,7 @@ class Structure(BaseService):
             detail='Department deleted.',
         )
 
+    @transaction_mode
     async def __check_if_department(self, department_id: int) -> None:
         department_id_in_db = await self.uow.structure.get_department_by_id(department_id)
         if not department_id_in_db:
