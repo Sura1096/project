@@ -8,6 +8,7 @@ from src.repositories.company import AccountRepository, CompanyRepository
 from src.repositories.employee import EmployeeRepository
 from src.repositories.position import PositionRepository
 from src.repositories.structure import StructureRepository
+from src.repositories.task import TaskRepository
 from src.repositories.user import SecretRepository, UserRepository
 
 
@@ -19,6 +20,7 @@ class AbstractUnitOfWork(ABC):
     structure: StructureRepository
     position: PositionRepository
     employee: EmployeeRepository
+    task: TaskRepository
 
     @abstractmethod
     def __init__(self) -> None:
@@ -54,6 +56,7 @@ class UnitOfWork(AbstractUnitOfWork):
         self.structure = StructureRepository(self.session)
         self.position = PositionRepository(self.session)
         self.employee = EmployeeRepository(self.session)
+        self.task = TaskRepository(self.session)
         return self
 
     async def __aexit__(
