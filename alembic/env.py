@@ -18,6 +18,7 @@ from src.models.company import Account, Company
 from src.models.user import User, Secret
 from src.models.structure import Structure
 from src.models.position import Position, Employee
+from src.models.task import Task
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
